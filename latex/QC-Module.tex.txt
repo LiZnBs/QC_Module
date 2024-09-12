@@ -1,0 +1,37 @@
+\documentclass{article}
+\usepackage[english]{babel}
+\usepackage[a4paper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+% Useful packages
+\usepackage{color}%\textcolor;\color
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage[colorlinks=true, allcolors=black]{hyperref}
+\usepackage{float}%图片包
+%create figure in latex
+\usepackage{tikz}
+%\usepackage{cite}
+\usepackage[backend=bibtex]{biblatex}
+%more math symbols
+\usepackage{amssymb}
+%more sections
+\usepackage{titlesec}
+%more sections to 5
+\newcommand{\subsubsubsection}[1]{\paragraph{#1}\mbox{}\\}% 把paragraph命令重命名为\subsubsubsection
+\setcounter{secnumdepth}{4} % 添加标号
+\setcounter{tocdepth}{4} % 添加到目录中
+\newcommand{\subsubsubsubsection}[1]{\subparagraph{#1}\mbox{}\\} % 把subparagraph命令重命名为\subsubsubsubsection
+\setcounter{secnumdepth}{5} % 添加标号
+\setcounter{tocdepth}{5} % 添加到目录中
+%Information to be included in the title page:
+\title{Finite temperature and chemical potential}
+\author{Xin-Peng Li}
+%Start of the document
+\begin{document}
+\maketitle
+%Generate the table of contents
+\tableofcontents
+\thispagestyle{empty}
+\setcounter{page}{0}
+\newpage
+\section{Background}
+It is already known that the solution of the gap equation is

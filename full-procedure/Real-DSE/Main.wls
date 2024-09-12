@@ -22,7 +22,16 @@ If[$OperatingSystem === "Windows",
 Get /@ paths;
 Clear[files, paths];
 
-kp=gauleg[-1,1,nk];zp=gauleg[-1,1,nz];Print[kp];
+files = {"m-M.wls"};
+paths = FileNameJoin[{"Parameters",#}] & /@ files;
+If[$OperatingSystem === "Windows", 
+    paths = StringReplace[paths, "\\" -> "\\\\"]
+];
+t=Get /@ paths;
+m=t[[1]][[1]];
+Clear[files, paths];
+
+kp=gauleg[-1,1,nk];zp=gauleg[-1,1,nz];
 (*E index map*)
 kp=ReplacePart[kp,1->\[Lambda]^kp[[1]] ];
 
@@ -31,6 +40,7 @@ A1=Table[1,{nk}];B1=Table[0.0034,{nk}];As=Table[0,{nk}];Bs=Table[0,{nk}];
 A2=Table[0,{nk}];B2=Table[0,{nk}];(*A2s=Table[1,{100}];B2s=Table[1,{100}];*)
 total=100;
 Z2=0;Z4=0;
+Print["Start calculating Real-DSE","\n"];
 While[
     total>erf
     ,
@@ -63,7 +73,7 @@ M=Drop[M, n - Length[M] - 1];
 pic = ListLinePlot[{A,B,M},
     Frame -> True,
     PlotStyle -> {Blue, Red,Black},
-    FrameLabel -> {Style["p^2 (GeV^2)", Bold, 12.5], 
+    FrameLabel -> {Style["p^2 (GeV)", Bold, 12.5], 
     Style["(GeV)", Bold, 12.5]},
     Epilog -> {Blue,Text["A", {1, 0.5}], Red, Text["B", {1, 0.4}],Black,Text["M", {1, 0.3}]},
     PlotRange -> Full
@@ -78,29 +88,19 @@ pic = ListLinePlot[{A,B,M},
     Export[path, pic];
     Clear[path];
 
-If[Not[DirectoryQ["Result"] ], CreateDirectory["Result"] ];  
-    path = FileNameJoin[{"Result", "Real-dse_A-B-M_" <>StringReplace[DateString[], {" " -> "-", ":" -> "."}]<> ".wls"}];
-    If[$OperatingSystem === "Windows", 
-    path = StringReplace[path, "\\" -> "\\\\"]
-    ];
-    Export[path, {A,B,M}];
-    Clear[path];
-
-If[Not[DirectoryQ["Result"] ], CreateDirectory["Result"] ];  
-    path = FileNameJoin[{"Result", "Real-dse_A-B_p2_All-results_" <>StringReplace[DateString[], {" " -> "-", ":" -> "."}]<> ".wls"}];
+    path = FileNameJoin[{"Result", "Real-dse_A-B_p2_All-results" <> ".wls"}];
     If[$OperatingSystem === "Windows", 
     path = StringReplace[path, "\\" -> "\\\\"]
     ];
     Export[path, {kp[[1]],A1,B1}];
     Clear[path];
 
-If[Not[DirectoryQ["Result"] ], CreateDirectory["Result"] ];  
-    path = FileNameJoin[{"Result", "Real-dse_Z2-Z4_" <>StringReplace[DateString[], {" " -> "-", ":" -> "."}]<> ".wls"}];
+    path = FileNameJoin[{"Result", "Real-dse_Z2-Z4" <> ".wls"}];
     If[$OperatingSystem === "Windows", 
     path = StringReplace[path, "\\" -> "\\\\"]
     ];
     Export[path, {Z2,Z4}];
     Clear[path];
 (*Export into txt*)
-path = "E:\\NJU\\program\\QC-module\\BSE\\DSE_Results\\Z2.txt";
+path = FileNameJoin[{"Result", "Z2.txt"}];
 Export[path, Z2, "Text"];
