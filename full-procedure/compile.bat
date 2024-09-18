@@ -1,4 +1,5 @@
 @echo off
+cd %~dp0
 wolframscript -file .\Input.wls
 cd .\Real-DSE
 REM compile wolfram files: Real-DSE

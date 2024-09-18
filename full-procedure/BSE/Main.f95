@@ -12,7 +12,7 @@ module parameters
     real(8) :: z2, kp(nk,2), yp(ny,2), zp(nz,2)
     complex(8) ::dse_a(nk,nz), dse_b(nk,nz)
     !> Basic calculation parameters in BSE
-    complex(8) :: f(nk,nz,4,1)=(1,1), f0(nk,nz,4,1)=(1,1), eigen=(1,1), eigen0=(0,0), eigen_num=(0,0), eigen_den=(0,0)
+    complex(8) :: f(nk,nz,4,1)=(1,1), f0(nk,nz,4,1)=(1,1), eigen=(1,1), eigen0=(0,0)
     !> For imput file， output file and private variables
     integer :: i, j, k
     integer, parameter :: z2_unit=10, dse_aunit=20, dse_bunit=21, kp_unit=30, yp_unit=31, zp_unit=32, input_file=50

@@ -10,7 +10,7 @@ module parameters
     real(8) :: z2, kp(nk,2), yp(ny,2), zp(nz,2)
     complex(8) ::dse_a(nk,nz), dse_b(nk,nz)
     !> Basic calculation parameters in BSE
-    complex(8) :: f(nk,nz,4,1)=(1,1), f0(nk,nz,4,1)=(1,1), eigen=(1,1), eigen0=(0,0), eigen_num=(0,0), eigen_den=(0,0)
+    complex(8) :: f(nk,nz,4,1)=(1,0), f0(nk,nz,4,1)=(1,0), eigen=(1,1), eigen0=(0,0), eigen_num=(0,0), eigen_den=(0,0)
     !> For imput file， output file and private variables
     integer :: i, j, k
     integer, parameter :: z2_unit=10, dse_aunit=20, dse_bunit=21, kp_unit=30, yp_unit=31, zp_unit=32
@@ -79,19 +79,7 @@ program bse
     end interface
 
     integer :: qn, qzn, qyn, pn, pzn
-    call init
-    ! print*, matmul(k_matrix(kp(1,1),kp(1,1),&
-    !                     yp(1,1),&
-    !                     zp(1,1),zp(1,1),&
-    !                     m,&
-    !                     dse_a(1,nz+1-1),dse_a(1,1),&
-    !                     dse_b(1,nz+1-1),dse_b(1,1)),f0(1,1,:,1))
-    ! print*, k_matrix(kp(1,1),kp(1,1),&
-    !                     yp(1,1),&
-    !                     zp(1,1),zp(1,1),&
-    !                     m,&
-    !                     dse_a(1,nz+1-1),dse_a(1,1),&
-    !                     dse_b(1,nz+1-1),dse_b(1,1))               
+    call init              
     do while (abs(eigen-eigen0)>erf)
         eigen0=eigen
         f0=f
@@ -128,13 +116,11 @@ program bse
     ! !$omp end parallel do
     eigen=f(1,1,1,1)/f0(1,1,1,1)
     print*, eigen 
-    ! print*, f(1,1,1,1), f0(1,1,1,1) ,'\n'
-    ! feigen=f/f0
     end do
 
-    ! open(output_file, file='./Complex-f.txt', status='replace', action='write')
-    ! write(output_file,*) feigen
-    ! close(output_file)
+    open(output_file, file='./Complex-f.txt', status='replace', action='write')
+    write(output_file,*) f
+    close(output_file)
 end program bse
 
 !> Function to create matrix K
