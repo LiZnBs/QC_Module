@@ -7,22 +7,6 @@ If[$OperatingSystem === "Windows",
 Get /@ paths;
 Clear[files, paths];
 
-files = {"Parameters-in-QCM.wls","kn.wls"};
-paths = FileNameJoin[{"Package", "Parameters",#}] & /@ files;
-If[$OperatingSystem === "Windows", 
-    paths = StringReplace[paths, "\\" -> "\\\\"]
-];
-Get /@ paths;
-Clear[files, paths];
-
-files = {"Calculation-parameters.wls"};
-paths = FileNameJoin[{"Parameters",#}] & /@ files;
-If[$OperatingSystem === "Windows", 
-    paths = StringReplace[paths, "\\" -> "\\\\"]
-];
-Get /@ paths;
-Clear[files, paths];
-
 CalAB[a0_,b0_, kp0_,zp0_,z20_,z40_]:=Module[
     {
         s1=Table[0,{Length[kp0[[1]]]}],

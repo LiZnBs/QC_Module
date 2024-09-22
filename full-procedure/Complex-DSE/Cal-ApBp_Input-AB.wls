@@ -1,11 +1,3 @@
-files = {"Parameters-in-QCM.wls","kn.wls"};
-paths = FileNameJoin[{"Package", "Parameters",#}] & /@ files;
-If[$OperatingSystem === "Windows", 
-    paths = StringReplace[paths, "\\" -> "\\\\"]
-];
-Get /@ paths;
-Clear[files, paths];
-
 CalApBp[ au0_, bu0_, ad0_, bd0_, ar0_, br0_, kp0_, zp0_]:=Module[
     {
     s1=Table[0,{Length[zp0[[1]]]}],

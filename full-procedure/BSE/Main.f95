@@ -1,23 +1,26 @@
 module parameters
     implicit none
     !> Calculate paremeters
-    integer, parameter :: nk=40, nz=24, ny=24
-    real*8, parameter :: pi=3.14159265358979, erf=1*exp(-10.0)
-    real*4, parameter :: lambda=100**2
+    integer :: nk, nz, ny
+    real*8 :: pi=3.14159265358979, erf
+    real*4 :: lambda
+    real*8 :: o1=-1.0 ,o2=1.0
     !> Paramters in QCM
-    real(4), parameter :: d=1.024, w=0.5, mt=0.5, tau=exp(2.0)-1, lambda_qcd=0.234, gamma_m=0.48
+    real(4) :: d, w, mt, tau, lambda_qcd, gamma_m
     !> Data from input
     real(4) :: m
     !> Data from DSE
-    real(8) :: z2, kp(nk,2), yp(ny,2), zp(nz,2)
-    complex(8) ::dse_a(nk,nz), dse_b(nk,nz)
+    real(8) :: z2
+    real(8), dimension(:,:), allocatable ::  kp, yp, zp
+    complex(8),  dimension(:,:), allocatable ::dse_a, dse_b
     !> Basic calculation parameters in BSE
-    complex(8) :: f(nk,nz,4,1)=(1,1), f0(nk,nz,4,1)=(1,1), eigen=(1,1), eigen0=(0,0)
+    complex(8), dimension(:,:,:,:), allocatable :: f, f0
+    complex(8) :: eigen, eigen0
     !> For imput file， output file and private variables
     integer :: i, j, k
-    integer, parameter :: z2_unit=10, dse_aunit=20, dse_bunit=21, kp_unit=30, yp_unit=31, zp_unit=32, input_file=50
+    integer, parameter :: z2_unit=10, dse_aunit=20, dse_bunit=21, input_file=50
     integer, parameter :: output_file=40
-    private :: i, j, k, z2_unit, dse_aunit, dse_bunit, kp_unit, yp_unit, zp_unit
+    private :: i, j, k, z2_unit, dse_aunit, dse_bunit, input_file
 contains
     !> Init the parameters
     subroutine init
@@ -26,33 +29,25 @@ contains
     open(z2_unit, file='./DSE_Results/Z2.txt', status='old', action='read')
     read(z2_unit, *) z2
     close(z2_unit)
-        ! Get m from file
-    open(input_file, file='./DSE_Results/M.txt', status='old', action='read')
-    read(input_file, *) m
+        !> Get d,w,mt,tau,Nf,lambda_qcd,gamma_m from file
+    open(input_file, file='../parameters/BSE-parameters.txt', status='old', action='read')
+    read(input_file, *) d, w, mt, tau, lambda_qcd, gamma_m,&
+    m, lambda, erf, nk, nz, ny
     close(input_file)
-        !> Get kp,yp,zp from file
-    open(kp_unit, file='./DSE_Results/kp.txt', status='old', action='read')
-    open(yp_unit, file='./DSE_Results/yp.txt', status='old', action='read')
-    open(zp_unit, file='./DSE_Results/zp.txt', status='old', action='read')
-    do j=1, 2
-        do i=1, nk
-            read(kp_unit, *) kp(i,j)
-        end do
-    end do
-    do j=1, 2
-        do i=1, ny
-            read(yp_unit, *) yp(i,j)
-        end do
-    end do
-    do j=1, 2
-        do i=1, nz
-            read(zp_unit, *) zp(i,j)
-        end do
-    end do
-    close(kp_unit)
-    close(yp_unit)
-    close(zp_unit)
-    !> Get dse_a,dse_b from file
+    ! Allocate memory 
+    allocate(f(nk,nz,4,1), f0(nk,nz,4,1))
+    allocate(kp(nk,2), yp(ny,2), zp(nz,2))
+    allocate(dse_a(nk,nz), dse_b(nk,nz))
+    f=(1,1) 
+    f0=(1,1)
+    eigen=(1,1)
+    eigen0=(0,0)
+        !> Get kp,yp,zp 
+    call gauleg(o1, o2, kp(:,1), kp(:,2), nk)
+    call gauleg(o1, o2, zp(:,1), zp(:,2), nz)
+    call gauleg(o1, o2, yp(:,1), yp(:,2), ny)
+    kp(:,1) = lambda**kp(:,1)
+        !> Get dse_a,dse_b from file
     open(dse_aunit, file='./DSE_Results/Complex-dse_A.txt', status='old', action='read')
     open(dse_bunit, file='./DSE_Results/Complex-dse_B.txt', status='old', action='read')
     do j=1, nz
@@ -293,3 +288,36 @@ function k_matrix(k, q, yq, zk, zq, p, ams, apu, bms, bpu) result(kernel)
         (ams**2*pairpp + 4*(bms**2 - ams**2*pairpq + ams**2*pairqq))*&
         (apu**2*pairpp + 4*(bpu**2 + apu**2*pairpq + apu**2*pairqq)))
 end function k_matrix
+
+    ! gauss get points
+SUBROUTINE gauleg(x1,x2,x,w,n)
+    INTEGER n
+    REAL(8) x1,x2,x(n),w(n)
+    DOUBLE PRECISION EPS
+    PARAMETER (EPS=3.d-16)
+    INTEGER i,j,m
+    DOUBLE PRECISION p1,p2,p3,pp,xl,xm,z,z1
+    m=(n+1)/2
+    xm=0.5d0*(x2+x1)
+    xl=0.5d0*(x2-x1)
+    do 12 i=1,m
+        z=cos(3.14159265358979d0*(i-.25d0)/(n+.5d0))
+        1       continue
+        p1=1.d0
+        p2=0.d0
+        do 11 j=1,n
+            p3=p2
+            p2=p1
+            p1=((2.d0*j-1.d0)*z*p2-(j-1.d0)*p3)/j
+        11        continue
+        pp=n*(z*p1-p2)/(z*z-1.d0)
+        z1=z
+        z=z1-p1/pp
+        if(abs(z-z1).gt.EPS)goto 1
+        x(i)=xm-xl*z
+        x(n+1-i)=xm+xl*z
+        w(i)=2.d0*xl/((1.d0-z*z)*pp*pp)
+        w(n+1-i)=w(i)
+    12    continue
+    return
+END  

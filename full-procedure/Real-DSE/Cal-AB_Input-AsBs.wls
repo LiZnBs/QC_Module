@@ -1,19 +1,3 @@
-files = {"Renormalization-point.wls"};
-paths = FileNameJoin[{"Package", "Parameters",#}] & /@ files;
-If[$OperatingSystem === "Windows", 
-    paths = StringReplace[paths, "\\" -> "\\\\"]
-];
-Get /@ paths;
-Clear[files, paths];
-
-files = {"Parameters-in-QCM.wls"};
-paths = FileNameJoin[{"Package", "Parameters",#}] & /@ files;
-If[$OperatingSystem === "Windows", 
-    paths = StringReplace[paths, "\\" -> "\\\\"]
-];
-Get /@ paths;
-Clear[files, paths];
-
 CalAB[a0_, b0_, kp0_]:=Module[
     {
     (*A,B*)

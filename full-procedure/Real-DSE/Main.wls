@@ -1,3 +1,12 @@
+(*Input parameters*)
+files = {"real-DSE-parameters.mx"};
+paths = FileNameJoin[{ParentDirectory[],"parameters",#}] & /@ files;
+If[$OperatingSystem === "Windows", 
+    paths = StringReplace[paths, "\\" -> "\\\\"]
+];
+Get /@ paths;
+Clear[files, paths];
+
 (*Gauss get point*)
 files = {"Gauleg-method_Get-point.wls"};
 paths = FileNameJoin[{"Package", "Functions",#}] & /@ files;
@@ -6,14 +15,8 @@ If[$OperatingSystem === "Windows",
 ];
 Get /@ paths;
 Clear[files, paths];
-files = {"Calculation-parameters.wls"};
-paths = FileNameJoin[{"Parameters",#}] & /@ files;
-If[$OperatingSystem === "Windows", 
-    paths = StringReplace[paths, "\\" -> "\\\\"]
-];
-Get /@ paths;
-Clear[files, paths];
 
+(*Calculate procedure*)
 files = {"Cal-AsBs_Input-AB.wls","Cal-AB_Input-AsBs.wls"};
 paths = FileNameJoin[{#}] & /@ files;
 If[$OperatingSystem === "Windows", 
@@ -22,27 +25,18 @@ If[$OperatingSystem === "Windows",
 Get /@ paths;
 Clear[files, paths];
 
-files = {"m-M.wls"};
-paths = FileNameJoin[{"Parameters",#}] & /@ files;
-If[$OperatingSystem === "Windows", 
-    paths = StringReplace[paths, "\\" -> "\\\\"]
-];
-t=Get /@ paths;
-m=t[[1]][[1]];
-Clear[files, paths];
-
-kp=gauleg[-1,1,nk];zp=gauleg[-1,1,nz];
+kp=gauleg[-1,1,realnk];zp=gauleg[-1,1,realnz];
 (*E index map*)
 kp=ReplacePart[kp,1->\[Lambda]^kp[[1]] ];
 
 (*Initial value*)
-A1=Table[1,{nk}];B1=Table[0.0034,{nk}];As=Table[0,{nk}];Bs=Table[0,{nk}];
-A2=Table[0,{nk}];B2=Table[0,{nk}];(*A2s=Table[1,{100}];B2s=Table[1,{100}];*)
+A1=Table[1,{realnk}];B1=Table[0.0034,{realnk}];As=Table[0,{realnk}];Bs=Table[0,{realnk}];
+A2=Table[0,{realnk}];B2=Table[0,{realnk}];(*A2s=Table[1,{100}];B2s=Table[1,{100}];*)
 total=100;
 Z2=0;Z4=0;
 Print["Start calculating Real-DSE","\n"];
 While[
-    total>erf
+    total>DSEerf
     ,
     t=CalAsBs[ A1, B1, kp, zp];
     As=t[[1]];Bs=t[[2]];

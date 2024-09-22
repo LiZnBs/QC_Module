@@ -1,12 +1,4 @@
 (*Necessary input: k=k^2, Output: G*)
-(*Some necessary wls*)
-files = {"Parameters-in-QCM.wls"};
-paths = FileNameJoin[{"Package","Parameters",#}] & /@ files;
-If[$OperatingSystem === "Windows", 
-    paths = StringReplace[paths, "\\" -> "\\\\"]
-];
-Get /@ paths;
-Clear[files, paths];
 (*Main functions*)
 F[k_]:=(1- E^(-k/(4 mt^2)))/k;
 Fuv[k_]:=(8\[Pi]^2 \[Gamma]m F[k])/Log[\[Tau]+(k/\[Lambda]QCD^2+1)^2];

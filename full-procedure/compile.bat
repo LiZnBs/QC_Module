@@ -12,9 +12,6 @@ REM compile wolfram files: Complex-DSE
 wolframscript -file .\Main.wls
 move /Y .\Result\Complex-dse_A.txt ..\BSE\DSE_Results\Complex-dse_A.txt
 move /Y .\Result\Complex-dse_B.txt ..\BSE\DSE_Results\Complex-dse_B.txt
-move /Y .\Result\kp.txt ..\BSE\DSE_Results\kp.txt
-move /Y .\Result\zp.txt ..\BSE\DSE_Results\zp.txt
-move /Y .\Result\yp.txt ..\BSE\DSE_Results\yp.txt
 cd ..\BSE
 REM compile fortran files: BSE
 gfortran -fopenmp Main.f95 -o Main

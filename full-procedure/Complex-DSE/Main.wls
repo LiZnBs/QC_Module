@@ -1,14 +1,14 @@
 (*Files*)
-files = {"Gauleg-method_Get-point.wls"};
-paths = FileNameJoin[{"Package", "Functions",#}] & /@ files;
+files = {"complex-DSE-parameters.mx"};
+paths = FileNameJoin[{ParentDirectory[],"parameters",#}] & /@ files;
 If[$OperatingSystem === "Windows", 
     paths = StringReplace[paths, "\\" -> "\\\\"]
 ];
 Get /@ paths;
 Clear[files, paths];
 
-files = {"Calculation-parameters.wls"};
-paths = FileNameJoin[{"Parameters",#}] & /@ files;
+files = {"Gauleg-method_Get-point.wls"};
+paths = FileNameJoin[{"Package", "Functions",#}] & /@ files;
 If[$OperatingSystem === "Windows", 
     paths = StringReplace[paths, "\\" -> "\\\\"]
 ];
@@ -31,15 +31,6 @@ If[$OperatingSystem === "Windows",
 Z= Get /@ paths;
 Clear[files, paths];
 
-files = {"m-M.wls"};
-paths = FileNameJoin[{"Parameters",#}] & /@ files;
-If[$OperatingSystem === "Windows", 
-    paths = StringReplace[paths, "\\" -> "\\\\"]
-];
-t=Get /@ paths;
-m=t[[1]][[1]];M=t[[1]][[2]];
-Clear[files, paths,t];
-
 (*Get A,B of Real DSE*)
 files = {"Real-dse_A-B_p2_All-results.wls"};
 paths = FileNameJoin[{"Parameters",#}] & /@ files;
@@ -52,30 +43,30 @@ t=Flatten[t,1];(*Flatten the list {A,B}*)
 realresultA=Table[{t[[1]][[i]],t[[2]][[i]]},{i,1,Length[t[[1]] ]}];
 realresultB=Table[{t[[1]][[i]],t[[3]][[i]]},{i,1,Length[t[[1]] ]}];
 (*Initial*)
-kp=gauleg[-1,1,nk];zp=gauleg[-1,1,nz];
+kp=gauleg[-1,1,complexnk];zp=gauleg[-1,1,complexnz];
 (*E index map*)
 kp=ReplacePart[kp,1->\[Lambda]^kp[[1]] ];
 (*Initial value*)
 (*Loop points*)
-A1u=Table[1,{nk}];B1u=Table[0.0034,{nk}];
-A1d=Table[1,{nk}];B1d=Table[0.0034,{nk}];
+A1u=Table[1,{complexnk}];B1u=Table[0.0034,{complexnk}];
+A1d=Table[1,{complexnk}];B1d=Table[0.0034,{complexnk}];
 (*Inside point*)
 (*Ap[[zp]][[kp]]*)
-Ap=Table[0,{nz},{nk}];Bp=Table[0,{nz},{nk}];
+Ap=Table[0,{complexnz},{complexnk}];Bp=Table[0,{complexnz},{complexnk}];
 (*Loop points 2*)
-A2u=Table[0,{nk}];B2u=Table[0,{nk}];
-A2d=Table[0,{nk}];B2d=Table[0,{nk}];
+A2u=Table[0,{complexnk}];B2u=Table[0,{complexnk}];
+A2d=Table[0,{complexnk}];B2d=Table[0,{complexnk}];
 total=100;
 (*Exact value*)
 Z2=Z[[1]][[1]];Z4=Z[[1]][[2]];
-Ar=Table[0,{nz}];Br=Table[0,{nz}];
+Ar=Table[0,{complexnz}];Br=Table[0,{complexnz}];
 t=CalArBr[t,kp,zp,Z2,Z4];
 Ar=t[[1]];Br=t[[2]];
 Clear[t];
 Print["Start calculating Complex-DSE","\n"];
 (*Calculate Ar,Br over, absolutely right!*)
 While[
-    total>erf
+    total>DSEerf
     ,
     t=CalApBp[ A1u, B1u, A1d, B1d, Ar, Br, kp, zp];
     Ap=t[[1]];Bp=t[[2]];
@@ -86,10 +77,10 @@ While[
     Print[total];
 ]; 
 (*Result on the real axis*)
-resultra=Table[{kp[[1]][[i]]-(\[Eta] M)^2,Re[Ap[[12]][[i]] ]},{i,1,nk}];
-resultrb=Table[{kp[[1]][[i]]-(\[Eta] M)^2,Re[Bp[[12]][[i]] ]},{i,1,nk}];
-Ar=Table[{zp[[1]][[i]],kp[[1]][[j]],Ap[[i]][[j]]},{i,1,nz},{j,1,nk}];
-Br=Table[{zp[[1]][[i]],kp[[1]][[j]],Bp[[i]][[j]]},{i,1,nz},{j,1,nk}];
+resultra=Table[{kp[[1]][[i]]-(\[Eta] M)^2,Re[Ap[[12]][[i]] ]},{i,1,complexnk}];
+resultrb=Table[{kp[[1]][[i]]-(\[Eta] M)^2,Re[Bp[[12]][[i]] ]},{i,1,complexnk}];
+Ar=Table[{zp[[1]][[i]],kp[[1]][[j]],Ap[[i]][[j]]},{i,1,complexnz},{j,1,complexnk}];
+Br=Table[{zp[[1]][[i]],kp[[1]][[j]],Bp[[i]][[j]]},{i,1,complexnz},{j,1,complexnk}];
 (*Select results*)
 n=1;i=1;
 While[
