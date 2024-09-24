@@ -58,7 +58,11 @@ calpara=Input["Your calculation parameters:
             (*judge*)
             Which[
                 complexnk>realnk,Print["The value of complexnk should be less than realnk!"];
-                complexnk=realnk;Pause[1]
+                complexnk=realnk;Pause[1],
+                complexnk!=BSEnk,Print["The value of complexnk should be equal to BSEnk!"];
+                complexnk=BSEnk;Pause[1],
+                complexnz!=BSEnz,Print["The value of complexnz should be equal to BSEnz!"];
+                complexnz=BSEnz;Pause[1]
             ]
             ,
         ToString[calpara]=="n",Break[], 
@@ -66,7 +70,7 @@ calpara=Input["Your calculation parameters:
     ];
 ];
 Print["Your calculation parameters:
-   1. \[Lambda]="<>ToString[\[Lambda]]<>"
+    1. \[Lambda]="<>ToString[\[Lambda]]<>"
     2. DSEerf="<>ToString[DSEerf]<>"
     3. prg="<>ToString[prg]<>"
     4. realnk="<>ToString[realnk]<>"
@@ -150,4 +154,12 @@ path = StringReplace[path, "\\" -> "\\\\"]
 Export[path, 
     {N[d], N[\[Omega]], N[mt], N[\[Tau]], N[\[Lambda]QCD], N[\[Gamma]m], N[M], N[\[Lambda]],
     N[BSEerf], BSEnk, BSEnz, BSEny}];
+Clear[path];
+
+path = FileNameJoin[{"parameters", "decay-constant-parameters" <> ".txt"}];
+If[$OperatingSystem === "Windows", 
+path = StringReplace[path, "\\" -> "\\\\"]
+];
+Export[path, 
+    {N[M], N[\[Lambda] ], BSEnk, BSEnz}];
 Clear[path];

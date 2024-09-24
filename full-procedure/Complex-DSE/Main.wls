@@ -6,7 +6,7 @@ If[$OperatingSystem === "Windows",
 ];
 Get /@ paths;
 Clear[files, paths];
-
+Print[M];
 files = {"Gauleg-method_Get-point.wls"};
 paths = FileNameJoin[{"Package", "Functions",#}] & /@ files;
 If[$OperatingSystem === "Windows", 
@@ -117,33 +117,20 @@ picB = ListLinePlot[{resultrb,realresultB},
 
     (*Export*)
 If[Not[DirectoryQ["Result"] ], CreateDirectory["Result"] ];  
-path = FileNameJoin[{"Result", "Compare_real-dse_complex-dse-on-real-axis_A" <> ".png"}];
+path = FileNameJoin[{"Result", "Compare_real-dse_complex-dse-on-real-axis_A" <>"m-"<>ToString[m]<>"_M-"<>ToString[M]<>".png"}];
 If[$OperatingSystem === "Windows", 
 path = StringReplace[path, "\\" -> "\\\\"]
 ];
 Export[path, picA];
 Clear[path];
     
-path = FileNameJoin[{"Result", "Compare_real-dse_complex-dse-on-real-axis_B" <> ".png"}];
+path = FileNameJoin[{"Result", "Compare_real-dse_complex-dse-on-real-axis_B"  <>"m-"<>ToString[m]<>"_M-"<>ToString[M]<> ".png"}];
 If[$OperatingSystem === "Windows", 
 path = StringReplace[path, "\\" -> "\\\\"]
 ];
 Export[path, picB];
 Clear[path];
 
-path = FileNameJoin[{"Result", "Complex-dse_A" <> ".wls"}];
-If[$OperatingSystem === "Windows", 
-path = StringReplace[path, "\\" -> "\\\\"]
-];
-Export[path, Ar];
-Clear[path];
-
-path = FileNameJoin[{"Result", "Complex-dse_B" <> ".wls"}];
-If[$OperatingSystem === "Windows", 
-path = StringReplace[path, "\\" -> "\\\\"]
-];
-Export[path, Br];
-Clear[path];
 (*Export into txt*)
 path = FileNameJoin[{"Result", "Complex-dse_A.txt"}];
 content=Map["("<>ToString[Re[#], CForm] <> ", " <> ToString[Im[#], CForm]<>")" &, Ap, {2}];
@@ -155,13 +142,3 @@ content=Map["("<>ToString[Re[#], CForm] <> ", " <> ToString[Im[#], CForm]<>")" &
 content=Flatten[content,1];
 Export[path, content, "Text"];
 Clear[path,content];
-(*Export Gauleg get points*)
-path = FileNameJoin[{"Result", "kp.txt"}];
-content=Flatten[kp,1];
-Export[path, content, "Text"];
-path = FileNameJoin[{"Result", "zp.txt"}];
-content=Flatten[zp,1];
-Export[path, content, "Text"];
-path = FileNameJoin[{"Result", "yp.txt"}];
-content=Flatten[zp,1];
-Export[path, content, "Text"];

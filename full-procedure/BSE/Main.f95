@@ -107,9 +107,11 @@ program bse
     end do
     eigen=f(1,1,1,1)/f0(1,1,1,1)
     print*, eigen 
-
     end do
-
+    
+    open(output_file, file='./Complex-f.txt', status='replace', action='write')
+    write(output_file,*) f
+    close(output_file)
 end program bse
 
 !> Function to create matrix K
