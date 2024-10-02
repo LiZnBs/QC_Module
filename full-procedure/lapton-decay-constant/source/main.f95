@@ -16,6 +16,7 @@ program decay
         end do
     end do
     c=((pai1-pai2)/(p1-p2))**(-0.5)
+    f=c*f
     do i=1,nk
         do j=1, nz
             decay_constant=decay_constant+trf(kp(i,1), p3, zp(j,1),&
@@ -24,6 +25,7 @@ program decay
             (2*pi)**(-3)*kp(i,2)*kp(i,1)*sqrt(1-zp(j,1)**2)*zp(j,2)
         end do
     end do
-    decay_constant=decay_constant*z2*3*c/p3
+    decay_constant=decay_constant*z2*3/p3
     print*, 'The decay constant of the pion is ', decay_constant
+    call export
 end program decay

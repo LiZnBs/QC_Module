@@ -163,3 +163,11 @@ path = StringReplace[path, "\\" -> "\\\\"]
 Export[path, 
     {N[M], N[\[Lambda] ], BSEnk, BSEnz}];
 Clear[path];
+
+path = FileNameJoin[{"parameters", "rp-parameters" <> ".txt"}];
+If[$OperatingSystem === "Windows", 
+path = StringReplace[path, "\\" -> "\\\\"]
+];
+Export[path, 
+    {N[M], N[\[Lambda] ], BSEnk, BSEnz}];
+Clear[path];

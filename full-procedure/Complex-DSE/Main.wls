@@ -6,7 +6,7 @@ If[$OperatingSystem === "Windows",
 ];
 Get /@ paths;
 Clear[files, paths];
-Print[M];
+
 files = {"Gauleg-method_Get-point.wls"};
 paths = FileNameJoin[{"Package", "Functions",#}] & /@ files;
 If[$OperatingSystem === "Windows", 

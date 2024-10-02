@@ -23,5 +23,6 @@ module parameters
     ! sum variables
     integer :: i, j, k, l
     !> For imput file， output file and private variables
-    integer, parameter :: dse_a1unit=10, dse_b1unit=11, funit=12, z2unit=20, dse_a2unit=13, dse_b2unit=14, input_file=30
+    integer, parameter :: dse_a1unit=10, dse_b1unit=11, funit=12, &
+    z2unit=20, dse_a2unit=13, dse_b2unit=14, input_file=30, export_file=40
 end module parameters

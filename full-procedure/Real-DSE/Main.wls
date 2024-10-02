@@ -98,3 +98,6 @@ pic = ListLinePlot[{A,B,M},
 (*Export into txt*)
 path = FileNameJoin[{"Result", "Z2.txt"}];
 Export[path, Z2, "Text"];
+path = FileNameJoin[{"Result", "Z4.txt"}];
+Export[path, Z4, "Text"];
+Clear[path];

@@ -1,0 +1,1 @@
+(16*(4*Bms*Bpu*f1 + 4*(Apu*Bms - Ams*Bpu)*f2*pairkp + 2*(Apu*Bms*f3 + Ams*Bpu*f3 + 2*Ams*Apu*f4)*pairkp**2 - Ams*Apu*f1*pairpp + 2*Apu*Bms*f2*pairpp + 2*Ams*Bpu*f2*pairpp + 4*pairkk*((Apu*Bms - Ams*Bpu)*f3*pairkp + Ams*Apu*(f1 - f4*pairpp))))/((4*Bms**2 + 4*Ams**2*pairkk - 4*Ams**2*pairkp + Ams**2*pairpp)*(4*Bpu**2 + 4*Apu**2*pairkk + 4*Apu**2*pairkp + Apu**2*pairpp))

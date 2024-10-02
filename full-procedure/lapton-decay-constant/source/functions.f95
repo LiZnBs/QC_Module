@@ -6,6 +6,7 @@ use parameters
     public :: init
     public :: trpi
     public :: trf
+    public :: export
     real(8), parameter :: EPS = 3.d-16
 contains
 ! variable k, p are all momentum square
@@ -73,6 +74,13 @@ function trpi(k, p, pz, kz, ams, apu, bms, bpu, f1, f2, f3, f4) result(res)
     pairkk - 4*ams**2*pairkp + ams**2*pairpp)*(4*bpu**2 + 4*apu**2*&
     pairkk + 4*apu**2*pairkp + apu**2*pairpp))
 end function trpi
+
+subroutine export
+    open(export_file, file='./results/renormalised-f.txt', status='unknown', action='write')
+    write(export_file,*) f
+    close(export_file)
+end subroutine export
+
 subroutine init
         print*, 'Start calculating the decay constant of the pion'
         ! get parameters from file
@@ -130,12 +138,12 @@ SUBROUTINE gauleg(x1,x2,x,w,n)
     REAL(8) x1,x2,x(n),w(n)
     DOUBLE PRECISION EPS
     PARAMETER (EPS=3.d-16)
-    INTEGER i,j,m
+    INTEGER i,j,mm
     DOUBLE PRECISION p1,p2,p3,pp,xl,xm,z,z1
-    m=(n+1)/2
+    mm=(n+1)/2
     xm=0.5d0*(x2+x1)
     xl=0.5d0*(x2-x1)
-    do 12 i=1,m
+    do 12 i=1,mm
         z=cos(3.14159265358979d0*(i-.25d0)/(n+.5d0))
         1       continue
         p1=1.d0
