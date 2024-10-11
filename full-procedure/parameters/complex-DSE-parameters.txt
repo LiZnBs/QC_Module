@@ -1,0 +1,33 @@
+m = 0.00321
+ 
+M = 0.140014
+ 
+\[Lambda] = 90000
+ 
+DSEerf = 0.007
+ 
+prg = 50
+ 
+complexnk = 200
+ 
+complexnz = 24
+ 
+kn = 16
+ 
+\[Eta] = 0.5
+ 
+d = 1.
+ 
+\[Omega] = 0.8
+ 
+mt = 0.5
+ 
+\[Tau] = -1 + E^2
+ 
+Nf = 4
+ 
+\[Lambda]QCD = 0.234
+ 
+\[Gamma]m = 12/25
+ 
+\[Mu] = 19

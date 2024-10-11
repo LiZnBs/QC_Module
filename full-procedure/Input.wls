@@ -156,6 +156,14 @@ Export[path,
     N[BSEerf], BSEnk, BSEnz, BSEny}];
 Clear[path];
 
+path = FileNameJoin[{"parameters", "normalization-parameters" <> ".txt"}];
+If[$OperatingSystem === "Windows", 
+path = StringReplace[path, "\\" -> "\\\\"]
+];
+Export[path, 
+    {N[M], N[\[Lambda] ], BSEnk, BSEnz}];
+Clear[path];
+
 path = FileNameJoin[{"parameters", "decay-constant-parameters" <> ".txt"}];
 If[$OperatingSystem === "Windows", 
 path = StringReplace[path, "\\" -> "\\\\"]

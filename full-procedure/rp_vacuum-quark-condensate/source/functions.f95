@@ -62,7 +62,7 @@ subroutine init
     close(dse_aunit)
     close(dse_bunit)
     !> Get f from file
-    open(funit, file='./DSE-BSE_results/renormalised-f.txt', status='old', action='read')
+    open(funit, file='./DSE-BSE_results/normalized-f.txt', status='old', action='read')
     read (funit, *) f
     close(funit)
     ! get z4 from file

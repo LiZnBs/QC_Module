@@ -4,9 +4,7 @@ use parameters
     private
     public :: gauleg
     public :: init
-    public :: trpi
     public :: trf
-    public :: export
     real(8), parameter :: EPS = 3.d-16
 contains
 ! variable k, p are all momentum square
@@ -34,98 +32,37 @@ function trf(k, p, kz, ams, apu, bms, bpu, f1, f2, f3, f4) result(res)
     4*apu**2*pairkp + apu**2*pairpp))
 end function trf
 
-! variable k, p, pz are all momentum square
-! P={0,0,0,i*sqrt(-p)}
-! k={0,0,sqrt(1-kz^2),kz}*sqrt(k)
-! Z={0,0,0,i*sqrt(-pz)}
-! p,pz<0
-function trpi(k, p, pz, kz, ams, apu, bms, bpu, f1, f2, f3, f4) result(res)
-    implicit none
-    real(8), intent(in) :: k, p, pz, kz
-    complex(8), intent(in) :: ams, apu, bms, bpu, f1, f2, f3, f4
-    real(8) :: pairpp, pairpz, pairzz, pairkk
-    complex(8) :: pairkz, pairkp
-    complex(8) :: res
-    ! initial variables
-    pairpp=p
-    pairkz=(0d0,1d0)*kz*sqrt(k)*sqrt(-pz)
-    pairpz=-sqrt(-p)*sqrt(-pz)
-    pairzz=pz
-    pairkp=(0d0,1d0)*kz*sqrt(k)*sqrt(-p)
-    pairkk=k
-    ! calculate the result
-    res=(96*(-4*bms*bpu*f1**2 + ams*apu*f1**2*pairpp + pairkz**2*&
-    (8*ams*apu*f2**2 + 8*bms*bpu*f2*f3 + 8*apu*bms*f2*f4 + 8*ams*&
-    bpu*f2*f4 + 4*bms*bpu*f4**2 + 4*(-(apu*bms) + ams*bpu)*f3*f4*&
-    pairkp - 2*ams*apu*f3**2*pairkp**2 + ams*apu*(2*f2*f3 - f4**2)&
-    *pairpp) - 4*apu*bms*f1*f2*pairpz - 4*ams*bpu*f1*f2*pairpz - 2&
-    *ams*apu*f2**2*pairpz**2 - 4*pairkz*((apu*bms - ams*bpu)*f2*(2&
-    *f1 - f4*pairpz) + pairkp*(f1*(apu*bms*f3 + ams*bpu*f3 + 2*ams*&
-    apu*f4) + ams*apu*(f2*f3 - f4**2)*pairpz)) + 4*bms*bpu*f2**2*&
-    pairzz - 4*apu*bms*f2*f4*pairkp*pairzz + 4*ams*bpu*f2*f4*pairkp*&
-    pairzz - 2*ams*apu*f4**2*pairkp**2*pairzz + ams*apu*f2**2*pairpp*&
-    pairzz + 4*ams*apu*pairkk**2*(f3**2*pairkz**2 + f4**2*pairzz) + &
-    pairkk*(-4*ams*apu*f1**2 + pairkz**2*(8*ams*apu*f2*f3 + 4*bms*bpu*&
-    f3**2 - 4*ams*apu*f4**2 + ams*apu*f3**2*pairpp) + 8*ams*apu*f1*&
-    f4*pairpz - 2*ams*apu*f4**2*pairpz**2 - 4*(apu*bms - ams*bpu)*&
-    f3*pairkz*(2*f1 - f4*pairpz) - 4*ams*apu*f2**2*pairzz - 8*apu*&
-    bms*f2*f4*pairzz - 8*ams*bpu*f2*f4*pairzz - 4*bms*bpu*f4**2*&
-    pairzz + ams*apu*f4**2*pairpp*pairzz)))/((4*bms**2 + 4*ams**2*&
-    pairkk - 4*ams**2*pairkp + ams**2*pairpp)*(4*bpu**2 + 4*apu**2*&
-    pairkk + 4*apu**2*pairkp + apu**2*pairpp))
-end function trpi
-
-subroutine export
-    open(export_file, file='./results/renormalised-f.txt', status='unknown', action='write')
-    write(export_file,*) f
-    close(export_file)
-end subroutine export
-
 subroutine init
         print*, 'Start calculating the decay constant of the pion'
         ! get parameters from file
         open(input_file, file='../parameters/decay-constant-parameters.txt', status='old', action='read')
         read(input_file, *) m, lambda, nk, nz
         close(input_file)
-        p1=-m**2
-        p2=-(m*1.0001)**2
         p3=-m**2
         ! Allocate memory 
         allocate(f(nk,nz,4,1))
         allocate(kp(nk,2), zp(nz,2))
-        allocate(dse_a1(nk,nz), dse_b1(nk,nz),dse_a2(nk,nz), dse_b2(nk,nz))
-        f=(1,1) 
+        allocate(dse_a(nk,nz), dse_b(nk,nz))
+        !get f from file
+        open(funit, file='./DSE-BSE_results/normalized-f.txt', status='old', action='read')
+        read (funit, *) f
+        close(funit)
         ! get points
         call gauleg(o1, o2, kp(:,1), kp(:,2), nk)
         call gauleg(o1, o2, zp(:,1), zp(:,2), nz)
         kp(:,1) = lambda**kp(:,1)
         kp(:,2) = kp(:,2)*kp(:,1)*log(lambda)
         !> Get dse_a1,dse_b1 from file
-    open(dse_a1unit, file='./DSE-BSE_results/Complex-dse_A1.txt', status='old', action='read')
-    open(dse_b1unit, file='./DSE-BSE_results/Complex-dse_B1.txt', status='old', action='read')
+    open(dse_aunit, file='./DSE-BSE_results/Complex-dse_A.txt', status='old', action='read')
+    open(dse_bunit, file='./DSE-BSE_results/Complex-dse_B.txt', status='old', action='read')
     do j=1, nz
         do i=1, nk
-            read(dse_a1unit, *) dse_a1(i,j)
-            read(dse_b1unit, *) dse_b1(i,j)
+            read(dse_aunit, *) dse_a(i,j)
+            read(dse_bunit, *) dse_b(i,j)
         end do
     end do
-    close(dse_a1unit)
-    close(dse_b1unit)
-    ! get dse_a2,dse_b2 from file
-    open(dse_a2unit, file='./DSE-BSE_results/Complex-dse_A2.txt', status='old', action='read')
-    open(dse_b2unit, file='./DSE-BSE_results/Complex-dse_B2.txt', status='old', action='read')
-    do j=1, nz
-        do i=1, nk
-            read(dse_a2unit, *) dse_a2(i,j)
-            read(dse_b2unit, *) dse_b2(i,j)
-        end do
-    end do
-    close(dse_a2unit)
-    close(dse_b2unit)
-    !> Get f from file
-    open(funit, file='./DSE-BSE_results/Complex-f.txt', status='old', action='read')
-    read (funit, *) f
-    close(funit)
+    close(dse_aunit)
+    close(dse_bunit)
     ! get z2 from file
     open(z2unit, file='./DSE-BSE_results/Z2.txt', status='old', action='read')
     read(z2unit, *) z2
