@@ -75,7 +75,7 @@ pic = ListLinePlot[{A,B,M},
 
     (*Export*)
     If[Not[DirectoryQ["Result"] ], CreateDirectory["Result"] ];  
-    path = FileNameJoin[{"Result", "Real-dse_" <>StringReplace[DateString[], {" " -> "-", ":" -> "."}]<> ".png"}];
+    path = FileNameJoin[{"Result", "Real-dse" (*<>StringReplace[DateString[], {" " -> "-", ":" -> "."}]*)<> ".png"}];
     If[$OperatingSystem === "Windows", 
     path = StringReplace[path, "\\" -> "\\\\"]
     ];

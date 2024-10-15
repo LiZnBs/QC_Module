@@ -7,7 +7,7 @@ REM excecuting normailzation
     cd .\normalization
     copy /Y ..\BSE\DSE_Results\Complex-dse_A.txt .\DSE-BSE_results\Complex-dse_A1.txt
     copy /Y ..\BSE\DSE_Results\Complex-dse_B.txt .\DSE-BSE_results\Complex-dse_B1.txt
-    move /Y ..\BSE\Complex-f.txt .\DSE-BSE_results\Complex-f.txt
+    copy /Y ..\BSE\Complex-f.txt .\DSE-BSE_results\Complex-f.txt
     REM excecuting adjacent M complex-DSE
     cd ..\Complex-DSE
     wolframscript -file .\decay-constant-api.wls
@@ -39,7 +39,6 @@ move /Y .\Result\Complex-dse_A.txt ..\BSE\DSE_Results\Complex-dse_A.txt
 move /Y .\Result\Complex-dse_B.txt ..\BSE\DSE_Results\Complex-dse_B.txt
 cd ..\BSE
 REM compile fortran files: BSE
-gfortran -fopenmp Main.f95 -o Main
 .\Main
 REM flag use to check whether have calculated normalization or not 
 cd %~dp0
@@ -56,9 +55,8 @@ if "%userinput1%"=="y" (
     .\bin\main.exe
 ) else (
     if "%userinput1%"=="n" (
-        REM exit
-        
-        ) else (
+        REM do nothing
+    ) else (
     echo Invalid input
     goto input1
     )
@@ -76,13 +74,35 @@ if "%userinput2%"=="y" (
     copy /Y ..\Real-DSE\Result\Z4.txt .\DSE-BSE_results\Z4.txt
     copy /Y ..\BSE\DSE_Results\Complex-dse_A.txt .\DSE-BSE_results\Complex-dse_A.txt
     copy /Y ..\BSE\DSE_Results\Complex-dse_B.txt .\DSE-BSE_results\Complex-dse_B.txt
-    call .\compile_rp.bat
+    .\bin\main.exe
 ) else (
     if "%userinput2%"=="n" (
-        REM exit
-
-        ) else (
+        REM do nothing
+    ) else (
     echo Invalid input
     goto input2
+    )
+)
+:input3
+REM exit
+cd %~dp0
+set /p userinput3=Ready to exit, whether do you want to save the files? (y/n):
+if "%userinput3%"=="y" (
+    REM move the files
+) else (
+    if "%userinput3%"=="n" (
+        del /Q /F .\Real-DSE\Result\*
+        del /Q /F .\Complex-DSE\Result\*
+        del /Q /F .\Complex-DSE\Parameters\*
+        del /Q /F .\BSE\DSE_Results\*
+        del /Q .\BSE\Complex-f.txt
+        del /Q /F .\normalization\DSE-BSE_results\*
+        del /Q /F .\normalization\results\*
+        del /Q /F .\lapton-decay-constant\DSE-BSE_results\*
+        del /Q /F .\rp_vacuum-quark-condensate\DSE-BSE_results\*
+        del /Q /F .\parameters\*
+    ) else (
+    echo Invalid input
+    goto input3
     )
 )
